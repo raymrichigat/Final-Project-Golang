@@ -2,8 +2,8 @@ package main
 
 import (
 	"go-web-native/config"
-	"go-web-native/controllers/bookcontroller"
-	"go-web-native/controllers/genrecontroller"
+	"go-web-native/controllers/brandcontroller"
+	"go-web-native/controllers/carcontroller"
 	"go-web-native/controllers/homecontroller"
 	"log"
 	"net/http"
@@ -30,18 +30,18 @@ func main() {
 	// 1.Homepage
 	http.HandleFunc("/", homecontroller.Welcome)
 
-	// 2. Category
-	http.HandleFunc("/genres", genrecontroller.Index)
-	http.HandleFunc("/genres/add", genrecontroller.Add)
-	http.HandleFunc("/genres/edit", genrecontroller.Edit)
-	http.HandleFunc("/genres/delete", genrecontroller.Delete)
+	// 2. Merek
+	http.HandleFunc("/brands", brandcontroller.Index)
+	http.HandleFunc("/brands/add", brandcontroller.Add)
+	// // http.HandleFunc("/merks/edit", genrecontroller.Edit)
+	// http.HandleFunc("/merks/delete", merekecontroller.Delete)
 
 	// 3. Products
-	http.HandleFunc("/books", bookcontroller.Index)
-	http.HandleFunc("/books/add", bookcontroller.Add)
-	http.HandleFunc("/books/detail", bookcontroller.Detail)
-	http.HandleFunc("/books/edit", bookcontroller.Edit)
-	http.HandleFunc("/books/delete", bookcontroller.Delete)
+	http.HandleFunc("/cars", carcontroller.Index)
+	// http.HandleFunc("/books/add", carcontroller.Add)
+	// http.HandleFunc("/books/detail", carcontroller.Detail)
+	// http.HandleFunc("/books/edit", carcontroller.Edit)
+	// http.HandleFunc("/books/delete", carcontroller.Delete)
 
 	// Run server
 	log.Println("Server running on port: 8080")

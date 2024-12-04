@@ -4,13 +4,22 @@ import (
 	"database/sql"
 	"log"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 )
 
 var DB *sql.DB
 
 func ConnectDB() {
-	db, err := sql.Open("mysql", "root:@/trial_pbkk?parseTime=true")
+	// PostgreSQL connection string format:
+	// "user=USERNAME password=PASSWORD dbname=DBNAME sslmode=disable"
+	connStr := "user=postgres password=12345678 dbname=fppbkk sslmode=disable"
+
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	err = db.Ping()
 	if err != nil {
 		panic(err)
 	}
