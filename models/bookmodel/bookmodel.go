@@ -7,13 +7,13 @@ import (
 
 // func Getall() []entities.Book {
 // 	rows, err := config.DB.Query(`
-// 		SELECT 
-// 			products.id, 
-// 			products.name, 
+// 		SELECT
+// 			products.id,
+// 			products.name,
 // 			categories.name as category_name,
-// 			products.stock, 
-// 			products.description, 
-// 			products.created_at, 
+// 			products.stock,
+// 			products.description,
+// 			products.created_at,
 // 			products.updated_at FROM products
 // 		JOIN categories ON products.category_id = categories.id
 // 	`)
@@ -46,43 +46,33 @@ import (
 // 	return products
 // }
 
-func GetAll() ([]entities.Book, error) {
-	rows, err := config.DB.Query(`
-		SELECT 
-			books.id, 
-			books.title, 
-			books.category_id,
-			genres.name as genre_name,
-			books.published_at, 
-			books.description, 
-			books.created_at, 
-			books.updated_at
-		FROM books
-		JOIN genres ON books.category_id = genres.id
-	`)
+func GetAllBooks() ([]entities.Book, error) {
+	query := `
+		SELECT b.id, b.title, b.genre_id, b.published_at, b.created_at, b.updated_at, b.description, g.id, g.name, g.created_at, g.updated_at
+		FROM books b
+		LEFT JOIN genres g ON b.genre_id = g.id
+	`
+	rows, err := config.DB.Query(query)
 	if err != nil {
-		return nil, err // kembalikan error jika ada masalah dengan query
+		return nil, err
 	}
 	defer rows.Close()
 
 	var books []entities.Book
 	for rows.Next() {
 		var book entities.Book
-		if err := rows.Scan(
-			&book.Id,
-			&book.Title,
-			&book.GenreID, // Assign category_id
-			&book.Genre.Name, // Assign genre name
-			&book.PublishedAt,
-			&book.Description,
-			&book.CreatedAt,
-			&book.UpdatedAt,
-		); err != nil {
-			return nil, err // kembalikan error jika ada masalah saat scan
+		var genre entities.Genre
+
+		err := rows.Scan(
+			&book.Id, &book.Title, &book.GenreID, &book.PublishedAt, &book.CreatedAt, &book.UpdatedAt, &book.Description,
+			&genre.Id, &genre.Name, &genre.CreatedAt, &genre.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
 		}
+		book.Genre = genre
 		books = append(books, book)
 	}
-
 	return books, nil
 }
 

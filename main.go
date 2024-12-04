@@ -2,16 +2,29 @@ package main
 
 import (
 	"go-web-native/config"
+	"go-web-native/controllers/bookcontroller"
 	"go-web-native/controllers/genrecontroller"
 	"go-web-native/controllers/homecontroller"
-	"go-web-native/controllers/bookcontroller"
 	"log"
 	"net/http"
+	"os"
 )
+
+func init() {
+	// Membuka file log
+	file, err := os.OpenFile("app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Menetapkan output log ke file
+	log.SetOutput(file)
+}
 
 func main() {
 	// 	Database connection
 	config.ConnectDB()
+	defer config.DB.Close() // Pastikan koneksi database ditutup saat aplikasi berhenti
 
 	// Routes
 	// 1.Homepage

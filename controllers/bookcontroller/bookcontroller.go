@@ -13,7 +13,7 @@ import (
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	// Get all books from the model
-	books, err := bookmodel.GetAll()
+	books, err := bookmodel.GetAllBooks()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
