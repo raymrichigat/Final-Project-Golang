@@ -3,11 +3,11 @@ package genrecontroller
 import (
 	"go-web-native/entities"
 	"go-web-native/models/genremodel"
+	"log"
 	"net/http"
 	"strconv"
 	"text/template"
 	"time"
-	"log"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -26,31 +26,60 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	temp.Execute(w, data)
 }
 
+// AddGenre menangani GET untuk menampilkan form dan POST untuk menambah genre
 func Add(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
+		// Tampilkan halaman form
 		temp, err := template.ParseFiles("views/genre/create.html")
 		if err != nil {
-			panic(err)
+			http.Error(w, "Error loading create genre page", http.StatusInternalServerError)
+			log.Println("Error:", err)
+			return
 		}
 
 		temp.Execute(w, nil)
+		return
 	}
 
-	if r.Method == "POST" {
-		var category entities.Genre
+	// Proses form submission
+	r.ParseForm()
+	name := r.FormValue("name")
 
-		category.Name = r.FormValue("name")
-		category.CreatedAt = time.Now()
-		category.UpdatedAt = time.Now()
+	// Cek apakah nama genre kosong
+	if name == "" {
+		http.Error(w, "Genre name is required", http.StatusBadRequest)
+		return
+	}
 
-		ok := genremodel.Create(category)
-		if !ok {
-			temp, _ := template.ParseFiles("views/genre/create.html")
-			temp.Execute(w, nil)
+	// Log data yang diterima
+	log.Println("Received genre name:", name)
+
+	// Buat objek genre
+	genre := entities.Genre{
+		Name:      name,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	// Log objek genre sebelum disimpan
+	log.Printf("Adding genre: %+v\n", genre)
+
+	// Tambahkan genre ke database
+	err := genremodel.AddGenre(genre)
+	if err != nil {
+		// Jika error terjadi, tampilkan error dalam modal
+		log.Println("Error adding genre:", err)
+		data := map[string]interface{}{
+			"error": err.Error(), // Kirimkan pesan error ke template
 		}
-
-		http.Redirect(w, r, "/genres", http.StatusSeeOther)
+		temp, _ := template.ParseFiles("views/genre/create.html")
+		temp.Execute(w, data)
+		return
 	}
+
+	// Setelah berhasil menambahkan, redirect ke halaman genres
+	log.Println("Genre added successfully")
+	http.Redirect(w, r, "/genres", http.StatusSeeOther)
 }
 
 func Edit(w http.ResponseWriter, r *http.Request) {
