@@ -12,7 +12,7 @@ var DB *sql.DB
 func ConnectDB() {
 	// PostgreSQL connection string format:
 	// "user=USERNAME password=PASSWORD dbname=DBNAME sslmode=disable"
-	connStr := "user=postgres password=12345678 dbname=fppbkk sslmode=disable"
+	connStr := "user=postgres password=database dbname=fp_pbkk sslmode=disable"
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
