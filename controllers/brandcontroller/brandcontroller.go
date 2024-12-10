@@ -25,7 +25,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	temp.Execute(w, data)
 }
 
-// AddBrand menangani GET untuk menampilkan form dan POST untuk menambah genre
+// AddBrand menangani GET untuk menampilkan form dan POST untuk menambah brand
 func Add(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		// Tampilkan halaman form
@@ -60,13 +60,13 @@ func Add(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Log objek genre sebelum disimpan
-	log.Printf("Adding genre: %+v\n", brand)
+	log.Printf("Adding brand: %+v\n", brand)
 
 	// Tambahkan genre ke database
 	err := brandmodel.AddBrand(brand)
 	if err != nil {
 		// Jika error terjadi, tampilkan error dalam modal
-		log.Println("Error adding genre:", err)
+		log.Println("Error adding brand:", err)
 		data := map[string]interface{}{
 			"error": err.Error(), // Kirimkan pesan error ke template
 		}
@@ -80,59 +80,68 @@ func Add(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/brands", http.StatusSeeOther)
 }
 
-// func Edit(w http.ResponseWriter, r *http.Request) {
-// 	if r.Method == "GET" {
-// 		temp, err := template.ParseFiles("views/genre/edit.html")
-// 		if err != nil {
-// 			panic(err)
-// 		}
+func Edit(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		temp, err := template.ParseFiles("views/brand/edit.html")
+		if err != nil {
+			http.Error(w, "Error loading edit brand page", http.StatusInternalServerError)
+			log.Println("Error:", err)
+			return
+		}
 
-// 		idString := r.URL.Query().Get("id")
-// 		id, err := strconv.Atoi(idString)
-// 		if err != nil {
-// 			panic(err)
-// 		}
+		idString := r.URL.Query().Get("id")
+		if idString == "" {
+			http.Error(w, "ID is required", http.StatusBadRequest)
+			return
+		}
 
-// 		genre := genremodel.Detail(id)
-// 		data := map[string]any{
-// 			"genre": genre,
-// 		}
+		brand := brandmodel.Detail(idString)
+		data := map[string]any{
+			"brand": brand,
+		}
 
-// 		temp.Execute(w, data)
-// 	}
+		temp.Execute(w, data)
+		return
+	}
 
-// 	if r.Method == "POST" {
-// 		var category entities.Genre
+	if r.Method == "POST" {
+		var category entities.Brand
 
-// 		idString := r.FormValue("id")
-// 		id, err := strconv.Atoi(idString)
-// 		if err != nil {
-// 			panic(err)
-// 		}
+		idString := r.FormValue("id")
+		if idString == "" {
+			http.Error(w, "ID is required", http.StatusBadRequest)
+			return
+		}
 
-// 		category.Name = r.FormValue("name")
-// 		category.UpdatedAt = time.Now()
+		category.Name = r.FormValue("name")
+		category.UpdatedAt = time.Now()
 
-// 		if ok := genremodel.Update(id, category); !ok {
-// 			http.Redirect(w, r, r.Header.Get("Referer"), http.StatusTemporaryRedirect)
-// 			return
-// 		}
+		if ok := brandmodel.Update(idString, category); !ok {
+			http.Redirect(w, r, r.Header.Get("Referer"), http.StatusTemporaryRedirect)
+			return
+		}
+		
+		log.Println("Brand Edited successfully")
+		http.Redirect(w, r, "/brands", http.StatusSeeOther)
+	}
+}
 
-// 		http.Redirect(w, r, "/genres", http.StatusSeeOther)
-// 	}
-// }
+func Delete(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
 
-// func Delete(w http.ResponseWriter, r *http.Request) {
-// 	idString := r.URL.Query().Get("id")
+	// Validasi apakah ID kosong
+	if id == "" {
+			http.Error(w, "ID is required", http.StatusBadRequest)
+			return
+	}
 
-// 	id, err := strconv.Atoi(idString)
-// 	if err != nil {
-// 		panic(err)
-// 	}
+	// Hapus brand berdasarkan ID
+	if err := brandmodel.Delete(id); err != nil {
+			http.Error(w, "Failed to delete brand", http.StatusInternalServerError)
+			log.Println("Error deleting brand:", err)
+			return
+	}
 
-// 	if err := genremodel.Delete(id); err != nil {
-// 		panic(err)
-// 	}
-
-// 	http.Redirect(w, r, "/genres", http.StatusSeeOther)
-// }
+	// Redirect setelah sukses menghapus
+	http.Redirect(w, r, "/brands", http.StatusSeeOther)
+}

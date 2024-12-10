@@ -48,7 +48,7 @@ import (
 
 func GetAllCars() ([]entities.Car, error) {
 	query := `
-		SELECT c.id, c.type, c.brand_id, c.license_plate, c.color, c.published_at, c.description, c.created_at, c.updated_at, c.deleted_at,
+		SELECT c.id, c.type, c.brand_id, c.license_plate, c.color, c.description, c.created_at, c.updated_at, c.deleted_at,
 		       b.id, b.name, b.created_at, b.updated_at
 		FROM cars c
 		LEFT JOIN brands b ON c.brand_id = b.id
@@ -65,7 +65,7 @@ func GetAllCars() ([]entities.Car, error) {
 		var brand entities.Brand
 
 		err := rows.Scan(
-			&car.Id, &car.Type, &car.BrandID, &car.LicensePlate, &car.Color, &car.PublishedAt, &car.Description,
+			&car.Id, &car.Type, &car.BrandID, &car.LicensePlate, &car.Color, &car.Description,
 			&car.CreatedAt, &car.UpdatedAt, &car.DeletedAt,
 			&brand.Id, &brand.Name, &brand.CreatedAt, &brand.UpdatedAt, &brand.DeletedAt,
 		)

@@ -33,8 +33,8 @@ func main() {
 	// 2. Merek
 	http.HandleFunc("/brands", brandcontroller.Index)
 	http.HandleFunc("/brands/add", brandcontroller.Add)
-	// // http.HandleFunc("/merks/edit", genrecontroller.Edit)
-	// http.HandleFunc("/merks/delete", merekecontroller.Delete)
+	http.HandleFunc("/brands/edit", brandcontroller.Edit)
+	http.HandleFunc("/brands/delete", brandcontroller.Delete)
 
 	// 3. Products
 	http.HandleFunc("/cars", carcontroller.Index)
