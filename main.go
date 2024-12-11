@@ -6,8 +6,9 @@ import (
 	"go-web-native/controllers/carcontroller"
 	"go-web-native/controllers/homecontroller"
 	"log"
-	"net/http"
 	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
 func init() {
@@ -16,34 +17,40 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// Menetapkan output log ke file
 	log.SetOutput(file)
 }
 
 func main() {
-	// 	Database connection
+	// Database connection
 	config.ConnectDB()
-	defer config.DB.Close() // Pastikan koneksi database ditutup saat aplikasi berhenti
+	defer config.DB.Close()
+
+	// Initialize Gin engine
+	router := gin.Default()
+
+	// Load templates
+	router.LoadHTMLGlob("views/*")
 
 	// Routes
-	// 1.Homepage
-	http.HandleFunc("/", homecontroller.Welcome)
+	router.GET("/", homecontroller.Welcome)
 
-	// 2. Merek
-	http.HandleFunc("/brands", brandcontroller.Index)
-	http.HandleFunc("/brands/add", brandcontroller.Add)
-	http.HandleFunc("/brands/edit", brandcontroller.Edit)
-	http.HandleFunc("/brands/delete", brandcontroller.Delete)
+	// Brand routes
+	brandRoutes := router.Group("/brands")
+	{
+		brandRoutes.GET("/", brandcontroller.Index)
+		brandRoutes.GET("/add", brandcontroller.AddForm)
+		brandRoutes.POST("/add", brandcontroller.Add)
+		brandRoutes.GET("/edit/:id", brandcontroller.EditForm)
+		brandRoutes.POST("/edit/:id", brandcontroller.Edit)
+		brandRoutes.POST("/delete/:id", brandcontroller.Delete)
+	}
 
-	// 3. Products
-	http.HandleFunc("/cars", carcontroller.Index)
-	// http.HandleFunc("/books/add", carcontroller.Add)
-	// http.HandleFunc("/books/detail", carcontroller.Detail)
-	// http.HandleFunc("/books/edit", carcontroller.Edit)
-	// http.HandleFunc("/books/delete", carcontroller.Delete)
+	// Car routes
+	carRoutes := router.Group("/cars")
+	{
+		carRoutes.GET("/", carcontroller.Index)
+	}
 
-	// Run server
-	log.Println("Server running on port: 8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Println("Server running on port 8080")
+	router.Run(":8080")
 }

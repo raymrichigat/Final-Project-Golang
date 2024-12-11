@@ -3,28 +3,23 @@ package carcontroller
 import (
 	"go-web-native/models/carmodel"
 	"net/http"
-	"text/template"
+
+	"github.com/gin-gonic/gin"
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
-	// Get all cars from the model
+func Index(c *gin.Context) {
 	cars, err := carmodel.GetAllCars()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		c.HTML(http.StatusInternalServerError, "car/index.html", gin.H{
+			"error": "Failed to load cars",
+		})
 		return
 	}
-	data := map[string]any{
+	c.HTML(http.StatusOK, "car/index.html", gin.H{
 		"cars": cars,
-	}
-
-	temp, err := template.ParseFiles("views/car/index.html")
-	if err != nil {
-		panic(err)
-	}
-
-	// Execute the template with car data
-	temp.Execute(w, data)
+	})
 }
+
 
 // func Add(w http.ResponseWriter, r *http.Request) {
 // 	if r.Method == "GET" {

@@ -5,6 +5,38 @@ import (
 	"go-web-native/entities"
 )
 
+func GetAllCars() ([]entities.Car, error) {
+	query := `
+		SELECT c.id, c.type, c.brand_id, c.license_plate, c.color, c.description, c.created_at, c.updated_at, c.deleted_at,
+		       b.id, b.name, b.created_at, b.updated_at
+		FROM cars c
+		LEFT JOIN brands b ON c.brand_id = b.id
+	`
+	rows, err := config.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var cars []entities.Car
+	for rows.Next() {
+		var car entities.Car
+		var brand entities.Brand
+
+		err := rows.Scan(
+			&car.Id, &car.Type, &car.BrandID, &car.LicensePlate, &car.Color, &car.Description,
+			&car.CreatedAt, &car.UpdatedAt, &car.DeletedAt,
+			&brand.Id, &brand.Name, &brand.CreatedAt, &brand.UpdatedAt, &brand.DeletedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		car.Brand = brand
+		cars = append(cars, car)
+	}
+	return cars, nil
+}
+
 // func Getall() []entities.Book {
 // 	rows, err := config.DB.Query(`
 // 		SELECT
@@ -45,38 +77,6 @@ import (
 
 // 	return products
 // }
-
-func GetAllCars() ([]entities.Car, error) {
-	query := `
-		SELECT c.id, c.type, c.brand_id, c.license_plate, c.color, c.description, c.created_at, c.updated_at, c.deleted_at,
-		       b.id, b.name, b.created_at, b.updated_at
-		FROM cars c
-		LEFT JOIN brands b ON c.brand_id = b.id
-	`
-	rows, err := config.DB.Query(query)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var cars []entities.Car
-	for rows.Next() {
-		var car entities.Car
-		var brand entities.Brand
-
-		err := rows.Scan(
-			&car.Id, &car.Type, &car.BrandID, &car.LicensePlate, &car.Color, &car.Description,
-			&car.CreatedAt, &car.UpdatedAt, &car.DeletedAt,
-			&brand.Id, &brand.Name, &brand.CreatedAt, &brand.UpdatedAt, &brand.DeletedAt,
-		)
-		if err != nil {
-			return nil, err
-		}
-		car.Brand = brand // Menambahkan data relasi Brand ke Car
-		cars = append(cars, car)
-	}
-	return cars, nil
-}
 
 // func Create(product entities.Product) bool {
 // 	result, err := config.DB.Exec(`
