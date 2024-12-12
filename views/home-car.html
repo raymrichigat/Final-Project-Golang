@@ -10,99 +10,135 @@
       integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
       crossorigin="anonymous"
     />
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      .content {
+        flex: 1;
+      }
+
+      footer {
+        background-color: #343a40;
+        color: white;
+      }
+    </style>
   </head>
   <body>
-    <!-- Navar -->
-    <nav class="navbar navbar-expand-lg bg-dark">
-      <div class="container">
-        <a class="navbar-brand text-light" href="/">Renty Cars</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item pe-3">
-              <a
-                class="nav-link active text-light"
-                aria-current="page"
-                href="/cars"
-                >Cars</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active text-light" href="/brands">Brands</a>
-            </li>
-          </ul>
+    <div class="wrapper">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg bg-dark">
+        <div class="container">
+          <a class="navbar-brand text-light" href="/">Renty Cars</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item pe-3">
+                <a
+                  class="nav-link active text-light"
+                  aria-current="page"
+                  href="/cars"
+                  >Cars</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active text-light" href="/brands">Brands</a>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-    </nav>
-    <!-- End of Navbar -->
+      </nav>
+      <!-- End of Navbar -->
 
-    <div class="container mt-3">
-      <h2>List Cars</h2>
-      <hr />
-      <a href="/cars/add" class="btn btn-primary">Add Car</a>
-      <table class="table table-bordered mt-2 text-center">
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Type</th>
-            <th>License Plate</th>
-            <th>Color</th>
-            <th>Price</th>
-            <th>Brand</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{range .cars}}
-          <tr>
-            <td>
-              <img
-                src="{{.Image}}"
-                alt="Car Image"
-                style="width: 100px; height: auto"
-              />
-            </td>
-            <td>{{.Tipe}}</td>
-            <td>{{.LicensePlate}}</td>
-            <td>{{.Color}}</td>
-            <td>Rp {{printf "%.2f" .Price}}</td>
-            <td>{{.BrandName.Name}}</td>
-            <td>
-              <a
-                href="/cars/detail/{{.Id}}"
-                class="btn btn-sm btn-info text-light"
-                >Detail</a
-              >
-              <a
-                href="/cars/edit/{{.Id}}"
-                class="btn btn-sm btn-warning text-light"
-                >Edit</a
-              >
-              <form
-                action="/cars/delete/{{.Id}}"
-                method="POST"
-                style="display: inline"
-                onsubmit="return confirm('Are you sure want to delete this car?')"
-              >
-                <button type="submit" class="btn btn-sm btn-danger">
-                  Delete
-                </button>
-              </form>
-            </td>
-          </tr>
-          {{end}}
-        </tbody>
-      </table>
+      <!-- Content -->
+      <div class="container mt-3 content">
+        <h2>List Cars</h2>
+        <hr />
+        <a href="/cars/add" class="btn btn-primary">Add Car</a>
+        <table class="table table-bordered mt-2 text-center">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Type</th>
+              <th>License Plate</th>
+              <th>Color</th>
+              <th>Price</th>
+              <th>Brand</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{range .cars}}
+            <tr>
+              <td>
+                <img
+                  src="{{.Image}}"
+                  alt="Car Image"
+                  style="width: 100px; height: auto"
+                />
+              </td>
+              <td>{{.Tipe}}</td>
+              <td>{{.LicensePlate}}</td>
+              <td>{{.Color}}</td>
+              <td>Rp {{printf "%.2f" .Price}}</td>
+              <td>{{.BrandName.Name}}</td>
+              <td>
+                <a
+                  href="/cars/detail/{{.Id}}"
+                  class="btn btn-sm btn-info text-light"
+                  >Detail</a
+                >
+                <a
+                  href="/cars/edit/{{.Id}}"
+                  class="btn btn-sm btn-warning text-light"
+                  >Edit</a
+                >
+                <form
+                  action="/cars/delete/{{.Id}}"
+                  method="POST"
+                  style="display: inline"
+                  onsubmit="return confirm('Are you sure want to delete this car?')"
+                >
+                  <button type="submit" class="btn btn-sm btn-danger">
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer -->
+      <footer class="text-light py-3 mt-5">
+        <div class="container text-center">
+          <p>&copy; 2024 Renty Cars. All rights reserved.</p>
+          <p>
+            <a href="#" class="text-light">Privacy Policy</a> | 
+            <a href="#" class="text-light">Terms of Service</a>
+          </p>
+        </div>
+      </footer>
     </div>
   </body>
 </html>
