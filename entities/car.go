@@ -4,15 +4,17 @@ import "time"
 
 // Car adalah entitas untuk mobil
 type Car struct {
-	Id          	uint       `json:"id"`
-	BrandID  		uint       `json:"brand_id"` // Relasi dengan Brand menggunakan ID
-	Type       		string     `json:"type"`
-	LicensePlate	string	   `json:"license_plate"` // Sesuai dengan kolom di tabel
-	Color			string	   `json:"color"`
-	Description 	string     `json:"description"`
-	CreatedAt   	time.Time  `json:"created_at"`
-	UpdatedAt   	time.Time `json:"updated_at"` // Gunakan pointer untuk kolom nullable
-	DeletedAt 		time.Time `json:"deleted_at"` // Gunakan pointer untuk kolom nullable
+	Id            uint      `json:"id"`            // ID mobil
+	BrandID       uint      `json:"brand_id"`      // ID brand, sebagai foreign key
+	Tipe         string    `json:"title"`         // Judul mobil
+	LicensePlate  string    `json:"license_plate"` // Nomor plat mobil
+	Color         string    `json:"color"`         // Warna mobil
+	Price         float64   `json:"price"`         // Harga mobil
+	Image         string    `json:"image,omitempty"` // Tidak wajib dikirimkan
+	Description   string    `json:"description"`   // Deskripsi mobil
+	CreatedAt     time.Time `json:"created_at"`     // Tanggal pembuatan
+	UpdatedAt     time.Time `json:"updated_at"`     // Tanggal update
+	DeletedAt     time.Time `json:"deleted_at"`     // Tanggal penghapusan
 
-	Brand Brand `json:"brand,omitempty"` // Objek Brand terkait
+	BrandName Brand `json:"brand,omitempty"` // Relasi dengan Brand, nama brand akan ditampilkan di sini
 }

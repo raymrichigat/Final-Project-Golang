@@ -31,6 +31,9 @@ func main() {
 	// Load templates
 	router.LoadHTMLGlob("views/*")
 
+	// Serve static files from the "public" directory
+	router.Static("/static", "./public")
+
 	// Routes
 	router.GET("/", homecontroller.Welcome)
 
@@ -49,8 +52,13 @@ func main() {
 	carRoutes := router.Group("/cars")
 	{
 		carRoutes.GET("/", carcontroller.Index)
+		carRoutes.GET("/add", carcontroller.AddForm)
+		carRoutes.POST("/add", carcontroller.Add)
+		// carRoutes.GET("/detail/:id", carcontroller.Detail)
+		// carRoutes.GET("/edit/:id", carcontroller.EditForm)
+		// carRoutes.POST("/edit/:id", carcontroller.Edit)
+		carRoutes.POST("/delete/:id", carcontroller.Delete)
 	}
-
 	log.Println("Server running on port 8080")
 	router.Run(":8080")
 }

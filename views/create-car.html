@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>GO Products</title>
+    <title>RentyCar</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -15,7 +15,7 @@
     <!-- Navar -->
     <nav class="navbar navbar-expand-lg bg-dark">
       <div class="container">
-        <a class="navbar-brand text-light" href="/">Go Products</a>
+        <a class="navbar-brand text-light" href="/">RentyCar</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -33,14 +33,12 @@
               <a
                 class="nav-link active text-light"
                 aria-current="page"
-                href="/products"
-                >Products</a
+                href="/cars"
+                >Cars</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link active text-light" href="/categories"
-                >Categories</a
-              >
+              <a class="nav-link active text-light" href="/Brands">Brands</a>
             </li>
           </ul>
         </div>
@@ -51,47 +49,85 @@
     <div class="container mt-3">
       <div class="row d-flex justify-content-center">
         <div class="col-4">
-          <h2>Add Products</h2>
+          <h2>Add Renty Cars</h2>
           <hr />
 
-          <form action="/products/add" method="POST">
+          <form action="/cars/add" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
-              <label class="form-label">Name</label>
-              <input
-                type="text"
-                class="form-control"
-                name="name"
-                autocomplete="off"
-              />
-            </div>
-            <div class="mb-3">
-              <select class="form-select" name="category_id">
-                {{range .categories}}
-                <option value="{{ .Id}}">{{.Name}}</option>
+              <label for="brand_id" class="form-label">Brand</label>
+              <select
+                class="form-select"
+                id="brand_id"
+                name="brand_id"
+                required
+              >
+                {{range .brands}}
+                <option value="{{.Id}}">{{.Name}}</option>
                 {{end}}
               </select>
             </div>
             <div class="mb-3">
-              <label class="form-label">Stock</label>
+              <label for="tipe" class="form-label">Type</label>
               <input
-                type="number"
+                type="text"
                 class="form-control"
-                name="stock"
-                autocomplete="off"
+                id="tipe"
+                name="tipe"
+                required
               />
             </div>
             <div class="mb-3">
-              <label class="form-label">Description</label>
+              <label for="license_plate" class="form-label"
+                >License Plate</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="license_plate"
+                name="license_plate"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="color" class="form-label">Color</label>
+              <input
+                type="text"
+                class="form-control"
+                id="color"
+                name="color"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="price" class="form-label">Price</label>
+              <input
+                type="number"
+                class="form-control"
+                id="price"
+                name="price"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="image" class="form-label">Image</label>
+              <input
+                type="file"
+                class="form-control"
+                id="image"
+                name="image"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
               <textarea
                 class="form-control"
+                id="description"
                 name="description"
-                rows="3"
               ></textarea>
             </div>
-            <div class="float-end">
-              <a href="/products" class="btn btn-secondary">Back</a>
-              <button type="submit" class="btn btn-primary">Save</button>
-            </div>
+            <a href="/cars" class="btn btn-secondary">Back</a>
+            <button type="submit" class="btn btn-primary">Add Car</button>
           </form>
         </div>
       </div>
