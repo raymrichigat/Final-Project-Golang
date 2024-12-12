@@ -54,9 +54,9 @@ func main() {
 		carRoutes.GET("/", carcontroller.Index)
 		carRoutes.GET("/add", carcontroller.AddForm)
 		carRoutes.POST("/add", carcontroller.Add)
-		// carRoutes.GET("/detail/:id", carcontroller.Detail)
-		// carRoutes.GET("/edit/:id", carcontroller.EditForm)
-		// carRoutes.POST("/edit/:id", carcontroller.Edit)
+		carRoutes.GET("/detail/:id", carcontroller.Detail)
+		carRoutes.GET("/edit/:id", carcontroller.EditForm)
+		carRoutes.POST("/edit/:id", carcontroller.Edit)
 		carRoutes.POST("/delete/:id", carcontroller.Delete)
 	}
 	log.Println("Server running on port 8080")
