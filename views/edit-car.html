@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>GO Products</title>
+    <title>Edit Car</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -12,10 +12,10 @@
     />
   </head>
   <body>
-    <!-- Navar -->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg bg-dark">
       <div class="container">
-        <a class="navbar-brand text-light" href="/">Go Products</a>
+        <a class="navbar-brand text-light" href="/">RentyCar</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -33,14 +33,12 @@
               <a
                 class="nav-link active text-light"
                 aria-current="page"
-                href="/products"
-                >Products</a
+                href="/cars"
+                >Cars</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link active text-light" href="/categories"
-                >Categories</a
-              >
+              <a class="nav-link active text-light" href="/brands">Brands</a>
             </li>
           </ul>
         </div>
@@ -50,46 +48,95 @@
 
     <div class="container mt-3">
       <div class="row d-flex justify-content-center">
-        <div class="col-4">
-          <h2>Edit Products</h2>
+        <div class="col-6">
+          <h2>Edit Car</h2>
           <hr />
 
-          <form action="/products/edit" method="POST">
-            <input type="hidden" name="id" value="{{ .product.Id }}" />
+          <form action="/cars/edit/{{.car.Id}}" method="POST">
+            <input type="hidden" name="id" value="{{.car.Id}}" />
+
+            <div class="mb-3 text-center">
+              <label class="form-label">Current Image</label>
+              <div class="mt-2">
+                <img
+                  src="{{.car.Image}}"
+                  alt="Current Image"
+                  style="width: 150px; height: auto"
+                />
+              </div>
+            </div>
+
             <div class="mb-3">
-              <label class="form-label">Name</label>
+              <label class="form-label">Type</label>
               <input
                 type="text"
                 class="form-control"
-                name="name"
-                value="{{ .product.Name}}"
+                name="tipe"
+                value="{{.car.Tipe}}"
+                required
               />
             </div>
+
             <div class="mb-3">
-              <select class="form-select" name="category_id">
-                {{range .categories}}
-                <option value="{{ .Id}}">{{ .Name }}</option>
+              <label class="form-label">Brand</label>
+              <select class="form-select" name="brand_id" required>
+                {{range .brands}}
+                <option
+                  value="{{.Id}}"
+                  {{if
+                  eq
+                  .Id
+                  $.car.BrandID}}selected{{end}}
+                >
+                  {{.Name}}
+                </option>
                 {{end}}
               </select>
             </div>
+
             <div class="mb-3">
-              <label class="form-label">Stock</label>
+              <label class="form-label">License Plate</label>
+              <input
+                type="text"
+                class="form-control"
+                name="license_plate"
+                value="{{.car.LicensePlate}}"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Color</label>
+              <input
+                type="text"
+                class="form-control"
+                name="color"
+                value="{{.car.Color}}"
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Price</label>
               <input
                 type="number"
                 class="form-control"
-                name="stock"
-                value="{{ .product.Stock}}"
-                autocomplete="off"
+                name="price"
+                value="{{.car.Price}}"
+                step="0.01"
+                required
               />
             </div>
-            <div class="mb-3">
+
+            <!-- <div class="mb-3">
               <label class="form-label">Description</label>
               <textarea class="form-control" name="description" rows="3">
-{{ .product.Description}}</textarea
+{{.car.Description}}</textarea
               >
-            </div>
+            </div> -->
+
             <div class="float-end">
-              <a href="/products" class="btn btn-secondary">Back</a>
+              <a href="/cars" class="btn btn-secondary">Back</a>
               <button type="submit" class="btn btn-primary">Save</button>
             </div>
           </form>

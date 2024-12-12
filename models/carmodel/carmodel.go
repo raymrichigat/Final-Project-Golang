@@ -95,3 +95,57 @@ func DeleteCar(id string) error {
 
 	return nil
 }
+
+func DetailCar(id string) (entities.Car, error) {
+	query := `
+		SELECT 
+			c.id, c.tipe, c.brand_id, c.license_plate, c.color, 
+			c.price, c.image, c.description, c.created_at, c.updated_at,
+			b.id, b.name, b.created_at, b.updated_at
+		FROM cars c
+		LEFT JOIN brands b ON c.brand_id = b.id
+		WHERE c.id = $1
+	`
+	var car entities.Car
+	var brand entities.Brand
+
+	err := config.DB.QueryRow(query, id).Scan(
+		&car.Id, &car.Tipe, &car.BrandID, &car.LicensePlate, &car.Color, 
+		&car.Price, &car.Image, &car.Description, &car.CreatedAt, &car.UpdatedAt,
+		&brand.Id, &brand.Name, &brand.CreatedAt, &brand.UpdatedAt,
+	)
+	if err != nil {
+		return car, err
+	}
+
+	car.BrandName = brand
+	return car, nil
+}
+
+func UpdateCar(id string, car entities.Car) error {
+	// Check if car exists
+	var exists bool
+	err := config.DB.QueryRow("SELECT EXISTS(SELECT 1 FROM cars WHERE id = $1)", id).Scan(&exists)
+	if err != nil {
+		return fmt.Errorf("error checking car existence: %v", err)
+	}
+	if !exists {
+		return fmt.Errorf("car with ID %s does not exist", id)
+	}
+
+	// Update car without modifying the image column
+	query := `
+		UPDATE cars SET 
+			brand_id = $1, tipe = $2, license_plate = $3, 
+			color = $4, price = $5, 
+			description = $6, updated_at = NOW()
+		WHERE id = $7
+	`
+	_, err = config.DB.Exec(
+		query,
+		car.BrandID, car.Tipe, car.LicensePlate,
+		car.Color, car.Price,
+		car.Description, id,
+	)
+	return err
+}

@@ -8,14 +8,15 @@ CREATE TABLE brands (
 
 CREATE TABLE cars (
   id SERIAL PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
+  brand_id INT NOT NULL,
+  tipe VARCHAR(255) NOT NULL,
   license_plate VARCHAR(50) NOT NULL,
   color VARCHAR(50) NOT NULL,
-  brand_id INT NOT NULL, -- Relasi ke Brand
-  published_date DATE,
+  price DECIMAL(10, 2) NOT NULL,
+  image VARCHAR(255) NOT NULL,
   description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP,
   deleted_at TIMESTAMP,
-  CONSTRAINT fk_brand_id FOREIGN KEY (brand_id) REFERENCES brands (id)
+  FOREIGN KEY (brand_id) REFERENCES brands(id)
 );

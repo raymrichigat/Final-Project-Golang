@@ -99,3 +99,79 @@ func Delete(c *gin.Context) {
 
     c.Redirect(http.StatusSeeOther, "/cars")
 }
+
+func Detail(c *gin.Context) {
+	// Ambil ID dari URL parameter
+	id := c.Param("id")
+
+	// Ambil detail mobil berdasarkan ID
+	car, err := carmodel.DetailCar(id)
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "detail-car.html", gin.H{
+			"error": "Failed to load car details",
+		})
+		return
+	}
+
+	// Kirim data mobil ke template
+	c.HTML(http.StatusOK, "detail-car.html", gin.H{
+		"car": car,
+	})
+}
+
+func EditForm(c *gin.Context) {
+	id := c.Param("id")
+	car, err := carmodel.DetailCar(id)
+	if err != nil {
+		c.HTML(http.StatusInternalServerError, "edit-car.html", gin.H{
+			"error": "Failed to load car details",
+		})
+		return
+	}
+
+	brands := brandmodel.GetAll()
+	c.HTML(http.StatusOK, "edit-car.html", gin.H{
+		"car":    car,
+		"brands": brands,
+	})
+}
+
+func Edit(c *gin.Context) {
+	id := c.Param("id")
+	brandID, _ := strconv.ParseUint(c.PostForm("brand_id"), 10, 32)
+	price, _ := strconv.ParseFloat(c.PostForm("price"), 64)
+
+	car := entities.Car{
+		BrandID:       uint(brandID),
+		Tipe:          c.PostForm("tipe"),
+		LicensePlate:  c.PostForm("license_plate"),
+		Color:         c.PostForm("color"),
+		Price:         price,
+		Description:   c.PostForm("description"),
+	}
+	
+
+	// Validate required fields
+	if car.Tipe == "" || car.LicensePlate == "" || car.BrandID == 0 {
+		brands := brandmodel.GetAll()
+		c.HTML(http.StatusBadRequest, "edit-car.html", gin.H{
+			"error":  "Tipe, License Plate, and Brand are required",
+			"brands": brands,
+			"car":    car,
+		})
+		return
+	}
+
+	// Update car
+	if err := carmodel.UpdateCar(id, car); err != nil {
+		brands := brandmodel.GetAll()
+		c.HTML(http.StatusInternalServerError, "edit-car.html", gin.H{
+			"error":  err.Error(),
+			"brands": brands,
+			"car":    car,
+		})
+		return
+	}
+
+	c.Redirect(http.StatusSeeOther, "/cars")
+}
